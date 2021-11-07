@@ -1,0 +1,89 @@
+:root {
+  --four-item: 65px;
+  --six-item: 45px;
+}
+
+.chakra-checkbox__control {
+  border: 1px solid #31485A !important;
+}
+
+.footer-flex {
+  gap: .5rem;
+}
+
+.options-flex {
+  gap: 1rem;
+}
+
+.six-grid-board {
+  grid-template-columns: repeat(6, var(--six-item));
+  grid-template-rows: repeat(6, var(--six-item));
+}
+
+.six-grid-board-item {
+  height: var(--six-item);
+  width: var(--six-item);
+  padding: 6px;
+}
+
+.four-grid-board {
+  grid-template-columns: repeat(4, var(--four-item));
+  grid-template-rows: repeat(4, var(--four-item));
+}
+
+.four-grid-board-item {
+  height: var(--four-item);
+  width: var(--four-item);
+  padding: 6px;
+}
+
+
+@media only screen and (min-width: 320px) {
+  .six-grid-board, .six-grid-board-item {
+    --six-item: 50px;
+  }
+
+  .four-grid-board, .four-grid-board-item {
+    --four-item: 70px;
+  }
+}
+
+@media only screen and (min-width: 320px) {
+  .six-grid-board, .six-grid-board-item {
+    --six-item: 50px;
+  }
+
+  .four-grid-board, .four-grid-board-item {
+    --four-item: 70px;
+  }
+}
+
+@media only screen and (min-width: 360px) {
+  .six-grid-board, .six-grid-board-item {
+    --six-item: 55px;
+  }
+
+  .four-grid-board, .four-grid-board-item {
+    --four-item: 75px;
+  }
+}
+
+@media only screen and (min-width: 420px) {
+  .six-grid-board, .six-grid-board-item {
+    --six-item: 60px;
+  }
+
+  .four-grid-board, .four-grid-board-item {
+    --four-item: 80px;
+  }
+}
+
+@media only screen and (min-width: 500px) {
+  .six-grid-board, .six-grid-board-item {
+    --six-item: 70px;
+  }
+
+  .four-grid-board, .four-grid-board-item {
+    --four-item: 90px;
+  }
+}
