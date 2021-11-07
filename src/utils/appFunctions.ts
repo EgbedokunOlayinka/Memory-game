@@ -90,8 +90,89 @@ export const createPlayers = (
 export const convertSecsToMins = (
   seconds: number
 ): { min: number; sec: number } => {
-  const min = seconds >= 60 ? seconds / 60 : 0;
+  const min = seconds >= 60 ? Math.floor(seconds / 60) : 0;
   const sec = seconds >= 60 ? seconds % 60 : seconds;
 
   return { min, sec };
+};
+
+export const finishPlayerTimeFunc = (
+  playerArr: GamePlayerDataType[],
+  player: GamePlayers
+): GamePlayerDataType[] => {
+  const notFinishedArr = (playerArr as any[]).filter(
+    (playerData: GamePlayerDataType) => !playerData.isFinished
+  );
+
+  const currentPlayerIndex = (notFinishedArr as any[]).findIndex(
+    (playerData: GamePlayerDataType) => playerData.isPlaying
+  );
+
+  const nextPlayerIndex =
+    currentPlayerIndex === notFinishedArr.length - 1
+      ? 0
+      : currentPlayerIndex + 1;
+
+  const newPlayerArr = (playerArr as any[]).map(
+    (playerData: GamePlayerDataType) => {
+      if (
+        playerData.playerNum === player &&
+        !playerData.isFinished &&
+        playerData.secondsLeft &&
+        playerData.isPlaying
+      ) {
+        playerData.isPlaying = false;
+        playerData.isFinished = true;
+        playerData.secondsLeft = 0;
+      } else if (
+        playerData.playerNum === notFinishedArr[nextPlayerIndex].playerNum
+      ) {
+        playerData.isPlaying = true;
+      }
+      return playerData;
+    }
+  );
+
+  // console.log(newPlayerArr);
+  return newPlayerArr;
+};
+
+export const setPlayerTimeFunc = (
+  playerArr: GamePlayerDataType[],
+  player: GamePlayers,
+  seconds: number
+): GamePlayerDataType[] => {
+  const notFinishedArr = (playerArr as any[]).filter(
+    (playerData: GamePlayerDataType) => !playerData.isFinished
+  );
+
+  const currentPlayerIndex = (notFinishedArr as any[]).findIndex(
+    (playerData: GamePlayerDataType) => playerData.isPlaying
+  );
+
+  const nextPlayerIndex =
+    currentPlayerIndex === notFinishedArr.length - 1
+      ? 0
+      : currentPlayerIndex + 1;
+
+  const newPlayerArr = (playerArr as any[]).map(
+    (playerData: GamePlayerDataType) => {
+      if (
+        playerData.playerNum === player &&
+        playerData.secondsLeft &&
+        !playerData.isFinished &&
+        playerData.isPlaying
+      ) {
+        playerData.secondsLeft -= seconds;
+        playerData.isPlaying = false;
+      } else if (
+        playerData.playerNum === notFinishedArr[nextPlayerIndex].playerNum
+      ) {
+        playerData.isPlaying = true;
+      }
+      return playerData;
+    }
+  );
+
+  return newPlayerArr;
 };

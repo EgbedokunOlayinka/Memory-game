@@ -29,7 +29,9 @@ const PlayerBox = ({ player }: IComponentProps) => {
         <Text color={textColor} fontSize="sm" fontWeight="600">
           {`Player ${playerNum}`}
         </Text>
-        {secondsLeft ? <Timer color={textColor} player={player} /> : null}
+        {secondsLeft !== null ? (
+          <Timer color={textColor} player={player} />
+        ) : null}
       </Box>
       <Text color={textColor} fontWeight="600" fontSize="xl">
         {pairs}

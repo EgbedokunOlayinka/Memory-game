@@ -14,6 +14,8 @@ import {
   createNumbersObject,
   createIconsObject,
   createPlayers,
+  setPlayerTimeFunc,
+  finishPlayerTimeFunc,
 } from "../utils/appFunctions";
 
 const AppStateContext = createContext<AppContextType | undefined>(undefined);
@@ -71,37 +73,7 @@ function AppProvider({ children }: AppProviderProps) {
   };
 
   const setPlayerTime = (player: GamePlayers, seconds: number) => {
-    const notFinishedArr = (state.gamePlayers as any[]).filter(
-      (playerData: GamePlayerDataType) => !playerData.isFinished
-    );
-
-    const currentPlayerIndex = (notFinishedArr as any[]).findIndex(
-      (playerData: GamePlayerDataType) => playerData.isPlaying
-    );
-
-    const nextPlayerIndex =
-      currentPlayerIndex === notFinishedArr.length - 1
-        ? 0
-        : currentPlayerIndex + 1;
-
-    const newPlayerArr = (state.gamePlayers as any[]).map(
-      (playerData: GamePlayerDataType) => {
-        if (
-          playerData.playerNum === player &&
-          playerData.secondsLeft &&
-          !playerData.isFinished &&
-          playerData.isPlaying
-        ) {
-          playerData.secondsLeft -= seconds;
-          playerData.isPlaying = false;
-        } else if (
-          playerData.playerNum === notFinishedArr[nextPlayerIndex].playerNum
-        ) {
-          playerData.isPlaying = true;
-        }
-        return playerData;
-      }
-    );
+    const newPlayerArr = setPlayerTimeFunc(state.gamePlayers, player, seconds);
 
     dispatch({
       type: "SET_PLAYER_TIME",
@@ -110,42 +82,11 @@ function AppProvider({ children }: AppProviderProps) {
   };
 
   const finishPlayerTime = (player: GamePlayers) => {
-    const notFinishedArr = (state.gamePlayers as any[]).filter(
-      (playerData: GamePlayerDataType) => !playerData.isFinished
-    );
-
-    const currentPlayerIndex = (notFinishedArr as any[]).findIndex(
-      (playerData: GamePlayerDataType) => playerData.isPlaying
-    );
-
-    const nextPlayerIndex =
-      currentPlayerIndex === notFinishedArr.length - 1
-        ? 0
-        : currentPlayerIndex + 1;
-
-    const newArr = (state.gamePlayers as any[]).map(
-      (playerData: GamePlayerDataType) => {
-        if (
-          playerData.playerNum === player &&
-          playerData.secondsLeft &&
-          !playerData.isFinished &&
-          playerData.isPlaying
-        ) {
-          playerData.isPlaying = false;
-          playerData.isFinished = true;
-          playerData.secondsLeft = 0;
-        } else if (
-          playerData.playerNum === notFinishedArr[nextPlayerIndex].playerNum
-        ) {
-          playerData.isPlaying = true;
-        }
-        return playerData;
-      }
-    );
+    const newPlayerArr = finishPlayerTimeFunc(state.gamePlayers, player);
 
     dispatch({
       type: "FINISH_PLAYER_TIME",
-      payload: newArr,
+      payload: newPlayerArr,
     });
   };
 

@@ -40,7 +40,12 @@ const Timer = ({
     }
   });
 
-  // console.log({ mins, secs });
+  useEffect(() => {
+    const { min: newMin, sec: newSec } = convertSecsToMins(
+      secondsLeft as number
+    );
+    setTime([newMin, newSec]);
+  }, [secondsLeft]);
 
   return (
     <Text color={color} fontSize="sm">
