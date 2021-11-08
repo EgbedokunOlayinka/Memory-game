@@ -139,8 +139,7 @@ export const finishPlayerTimeFunc = (
 
 export const setPlayerTimeFunc = (
   playerArr: GamePlayerDataType[],
-  player: GamePlayers,
-  seconds: number
+  seconds: number | null
 ): GamePlayerDataType[] => {
   const notFinishedArr = (playerArr as any[]).filter(
     (playerData: GamePlayerDataType) => !playerData.isFinished
@@ -157,13 +156,11 @@ export const setPlayerTimeFunc = (
 
   const newPlayerArr = (playerArr as any[]).map(
     (playerData: GamePlayerDataType) => {
-      if (
-        playerData.playerNum === player &&
-        playerData.secondsLeft &&
-        !playerData.isFinished &&
-        playerData.isPlaying
-      ) {
-        playerData.secondsLeft -= seconds;
+      if (!playerData.isFinished && playerData.isPlaying) {
+        playerData.secondsLeft =
+          typeof seconds === "number"
+            ? (playerData.secondsLeft as number) - seconds
+            : null;
         playerData.isPlaying = false;
       } else if (
         playerData.playerNum === notFinishedArr[nextPlayerIndex].playerNum

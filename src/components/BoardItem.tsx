@@ -2,20 +2,20 @@ import { Box, Center, Text } from "@chakra-ui/react";
 import { GameGridSizes, GameBoardItem } from "../types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { iconMapping } from "../utils/iconData";
-import { useState } from "react";
+import { useAppState } from "../context/AppContext";
 
 export interface IBoxComponentProps {
   item: GameBoardItem;
   gridSize: GameGridSizes;
+  index: number;
 }
 
-type StateTypes = "hidden" | "open" | "matched";
-
 const BoardItem = ({
-  item: { value, matched },
+  item: { value, status },
   gridSize,
+  index,
 }: IBoxComponentProps) => {
-  const [status, setStatus] = useState<StateTypes>("hidden");
+  const { checkForMatch } = useAppState();
 
   const boxClass =
     gridSize === 4
@@ -38,7 +38,8 @@ const BoardItem = ({
         borderRadius="50%"
         fontSize="14px"
         cursor="pointer"
-        _hover={{ opacity: "0.8" }}
+        _hover={{ opacity: status === "hidden" ? "0.8" : "1" }}
+        onClick={() => checkForMatch(value, index)}
       >
         {status === "hidden" ? null : typeof value === "string" ? (
           <FontAwesomeIcon icon={iconMapping[value]} size="2x" />

@@ -8,6 +8,9 @@ import {
   GameThemes,
   GamePlayers,
   GamePlayerDataType,
+  GameBoardItem,
+  GameBoard,
+  ItemStateTypes,
 } from "../types";
 import { AppReducer, initialState } from "./AppReducer";
 import {
@@ -39,7 +42,7 @@ function AppProvider({ children }: AppProviderProps) {
     const gameBoardArr = (randomArr as any[]).map((item: string | number) => {
       return {
         value: item,
-        matched: false,
+        status: "hidden" as ItemStateTypes,
       };
     });
 
@@ -72,8 +75,8 @@ function AppProvider({ children }: AppProviderProps) {
     createPlayerState(numOfPlayers, gameTime);
   };
 
-  const setPlayerTime = (player: GamePlayers, seconds: number) => {
-    const newPlayerArr = setPlayerTimeFunc(state.gamePlayers, player, seconds);
+  const setPlayerTime = (seconds: number | null) => {
+    const newPlayerArr = setPlayerTimeFunc(state.gamePlayers, seconds);
 
     dispatch({
       type: "SET_PLAYER_TIME",
@@ -90,6 +93,22 @@ function AppProvider({ children }: AppProviderProps) {
     });
   };
 
+  const scorePairToPlayer = () => {
+    const newPlayerArr = (state.gamePlayers as any[]).map(
+      (playerData: GamePlayerDataType) => {
+        if (playerData.isPlaying) {
+          playerData.pairs += 1;
+        }
+        return playerData;
+      }
+    );
+
+    dispatch({
+      type: "SCORE_PLAYER_PAIR",
+      payload: newPlayerArr,
+    });
+  };
+
   const restartGame = () => {
     dispatch({
       type: "RESTART_GAME",
@@ -102,6 +121,54 @@ function AppProvider({ children }: AppProviderProps) {
     });
   };
 
+  const checkForMatch = (value: string | number, index: number) => {
+    const initialMove = state.moves % 2 === 0;
+
+    let newGameBoardArr: GameBoard;
+
+    const checkMatch = value === state.currentMove;
+
+    if (initialMove) {
+      newGameBoardArr = (state.gameBoard as any[]).map(
+        (item: GameBoardItem, idx: number) => {
+          if (item.value === value && idx === index) {
+            item.status = "open";
+          }
+          return item;
+        }
+      );
+    } else if (checkMatch) {
+      newGameBoardArr = (state.gameBoard as any[]).map(
+        (item: GameBoardItem, idx: number) => {
+          if (item.value === value) {
+            item.status = "matched";
+          }
+          return item;
+        }
+      );
+      scorePairToPlayer();
+    } else {
+      newGameBoardArr = (state.gameBoard as any[]).map(
+        (item: GameBoardItem, idx: number) => {
+          if (item.value === value && idx === index) {
+            item.status = "open";
+          }
+          return item;
+        }
+      );
+    }
+
+    dispatch({
+      type: "MAKE_MOVE",
+      payload: value,
+    });
+
+    dispatch({
+      type: "CHECK_FOR_MATCH",
+      payload: newGameBoardArr,
+    });
+  };
+
   const value = {
     state,
     dispatch,
@@ -111,6 +178,8 @@ function AppProvider({ children }: AppProviderProps) {
     setGameOptions,
     setPlayerTime,
     finishPlayerTime,
+    scorePairToPlayer,
+    checkForMatch,
   };
 
   return (

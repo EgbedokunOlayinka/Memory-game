@@ -21,7 +21,12 @@ const Board = () => {
     <Center my={spaceValue}>
       <Grid maxWidth="500px" className={gridClass}>
         {gameBoard?.map((item, index) => (
-          <BoardItem key={index} item={item} gridSize={gridSize} />
+          <BoardItem
+            key={index}
+            item={item}
+            index={index}
+            gridSize={gridSize}
+          />
         ))}
       </Grid>
     </Center>

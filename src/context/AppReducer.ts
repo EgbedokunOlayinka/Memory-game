@@ -10,6 +10,8 @@ const initialState: State = {
   gameTime: 3,
   gameWinner: null,
   gamePlayers: [],
+  moves: 0,
+  currentMove: null,
 };
 
 function AppReducer(state: State, action: Action): State {
@@ -18,6 +20,13 @@ function AppReducer(state: State, action: Action): State {
       return {
         ...state,
         gameView: action.payload,
+      };
+    }
+    case "MAKE_MOVE": {
+      return {
+        ...state,
+        moves: state.moves + 1,
+        currentMove: action.payload,
       };
     }
     case "SET_GAME_OPTIONS": {
@@ -38,6 +47,12 @@ function AppReducer(state: State, action: Action): State {
         gameBoard: action.payload,
       };
     }
+    case "CHECK_FOR_MATCH": {
+      return {
+        ...state,
+        gameBoard: action.payload,
+      };
+    }
     case "SET_PLAYER_STATE": {
       return {
         ...state,
@@ -51,6 +66,18 @@ function AppReducer(state: State, action: Action): State {
       };
     }
     case "FINISH_PLAYER_TIME": {
+      return {
+        ...state,
+        gamePlayers: action.payload,
+      };
+    }
+    case "SCORE_PLAYER_PAIR": {
+      return {
+        ...state,
+        gamePlayers: action.payload,
+      };
+    }
+    case "SELECT_NEXT_PLAYER": {
       return {
         ...state,
         gamePlayers: action.payload,
